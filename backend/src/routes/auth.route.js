@@ -1,9 +1,11 @@
 import express from 'express';
 import { signup , login, logout } from '../controllers/auth.controller.js';
 const router = express.Router();
+const app = express();
+app.use(express.json()); // Middleware to parse JSON bodies
 
-router.get("/login" , login)
-router.get("/logout" , logout)
-router.get("/signup" , signup)
+router.post("/login" , login)
+router.post("/logout" , logout) 
+router.post("/signup" , signup)
 
 export default router;

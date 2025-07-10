@@ -47,4 +47,12 @@ make all the routes in one file under router and use in server.js
 -> create models for ddatabbase
   - create a user schema -> two args -> schema , timestamps:true;
   - timestamp will give the infor about createdAt and updatedAt
-  - Salting the pass with becrypt
+  - Salting the pass with becrypt before save user pre. (before schema declaration)
+
+-> Creating Signup API
+  - validate all the data
+  - make a new instance of the user Schema using await
+  - create a JWT token with JWT.sign (unique id : user id , secretKey , expiresIn : "2d")
+  - wrap it in a cookie (with some params for safety)
+
+

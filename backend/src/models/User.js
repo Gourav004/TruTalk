@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import becrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 const userSchema = new mongoose.Schema(
   {
     fullName: {
@@ -53,14 +53,16 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User" , userSchema);
+
 
 //pre hook = > becrypting our password before saving it to the database
 userSchema.pre("save" , async function(next){
     if(!this.isModified("password")) return next(); //if password is not modified then skip the hashing
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword =  await bcrypt.hash(this.password , salt);
+    // const salt = await bcrypt.genSalt(10);
+    const hashedPassword =  await bcrypt.hash(this.password , 10);
     this.password = hashedPassword;  //exttra 
     next(); 
-})
+});
+
+const User = mongoose.model("User" , userSchema);
 export default User;
