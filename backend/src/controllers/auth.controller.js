@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import {JWT_SECRET_KEY } from "../../constants.js";
 import express from 'express';
  const app = express();
+ import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
@@ -66,11 +67,61 @@ export async function signup(req, res) {
     }
     // res.send("User signed up");
 }
+
 export async function login(req, res) {
-    // Handle user login logic here
-    res.send("User login up");
+  try {
+    const { email, password } = req.body;
+
+    // Safety checks
+    if (!email || !password) {
+      return res.status(400).send("All fields are required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).send("Invalid credentials");
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    // Check if the password is correct
+    if (!isPasswordCorrect) {
+      return res.status(401).send("Invalid credentials");
+    }
+
+    // Create token
+    const token = jwt.sign({ id: user._id }, JWT_SECRET_KEY, {
+      expiresIn: "7d",
+    });
+
+    // Set cookie
+    res.cookie("jwt", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    // Send response
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        profilePic: user.profilePic,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ ERROR: error.message });
+  }
 }
+
 export function logout(req, res) {
     // Handle user logout logic here
-    res.send("User logged out");
+    res.clearCookie("jwt"); // Clear the cookie
+    // Optionally, you can also invalidate the token on the server side if needed   
+
+    res.status(200).send("Logged out successfully");
 }
