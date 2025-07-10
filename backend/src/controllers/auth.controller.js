@@ -4,6 +4,8 @@ import {JWT_SECRET_KEY } from "../../constants.js";
 import express from 'express';
  const app = express();
  import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
+// import { upsertStreamUser } from "../lib/stream.js";
+import { upsertStreamUser } from "../lib/stream.js";
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
@@ -35,12 +37,26 @@ export async function signup(req, res) {
         const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
 
         const user = await User.create({
-            fullName,
-            email ,
-            password,
-            profilePic: randomAvatar,
-        })
+          fullName,
+          email,
+          password,
+          profilePic: randomAvatar,
+        });
 
+         //creating thestream data
+          try
+          {
+            await upsertStreamUser({
+            id : user._id.toString(),
+            name : user.fullName, 
+            image : user.profilePic || "",
+
+          })
+        console.log("Stream user created successfully for user:", user.fullName);
+        }
+          catch(error) {
+            console.error("Error upserting Stream user:", error.message);
+          }
          //making up a token
         const token = jwt.sign({id : user._id} , JWT_SECRET_KEY , {expiresIn : "7d"} );
          // wraping it into a cookie
@@ -77,8 +93,8 @@ export async function login(req, res) {
       return res.status(400).send("All fields are required");
     }
 
-    const user = await User.findOne({ email });
-
+    const user = await User.findOne({ email });   //returns user instance
+//    user is full user instance not only email   
     if (!user) {
       return res.status(401).send("Invalid credentials");
     }
