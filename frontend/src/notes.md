@@ -43,3 +43,8 @@ make all the routes in one file under router and use in server.js
   - await mongoose.connect(MONGO_URL)
 
 -> SET up STREAM API key and secret key
+
+-> create models for ddatabbase
+  - create a user schema -> two args -> schema , timestamps:true;
+  - timestamp will give the infor about createdAt and updatedAt
+  - Salting the pass with becrypt
