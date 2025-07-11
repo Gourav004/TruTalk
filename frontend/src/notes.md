@@ -55,6 +55,10 @@ make all the routes in one file under router and use in server.js
   - create a JWT token with JWT.sign (unique id : user id , secretKey , expiresIn : "2d")
   - wrap it in a cookie (with some params for safety)
 
+-> HOW to MAKE A Cookie 
+   - use Sign with all the args
+   - write it in cookie under a name.
+
 -> Login API
 Validate all the data (check if email and password are provided)
 Find user in the database using User.findOne({ email })
@@ -97,4 +101,18 @@ export const upsertStreamUser = async (userData) =>{
 
           }
           )
+
+- Protect our route (onboarding route => only signup users can go there.)
+   route.get("/onboard" , protectRoute , onBoard)
+ - use userAuth like function
+      - import jwt , User (protectRoute) and cookie parser(in server.js)
+      - use 3 paras (req , res, next) 
+      - use jwt( our token name) token = res.cookies.jwt   => cookie me se jwt nikaal liya hai.
+      - verify it with => decoded jwt.verify(token , JWT_SECRET_KEY)  => verify kiya hai.
+      - verify decoded with findById(decode.id);  => JWT me jo id mila usse actual user ko database se find kar rahe ho.
+      - req.user => uski full info req.user me attach kar do. 
+          - - To attach the currently logged-in user's full data to the request object so that:
+               All upcoming routes/middlewares can access the authenticated user.
+               You don’t need to fetch user from DB again and again.
+      - next()  => onBoard middleware ko bhi to call krna hai.
 
