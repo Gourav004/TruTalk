@@ -127,3 +127,12 @@ export const upsertStreamUser = async (userData) =>{
                You don’t need to fetch user from DB again and again.
       - next()  => onBoard middleware ko bhi to call krna hai.
 
+
+--> Feed API (getRecommended User)
+   - khud ko , friends ko exclude krna hai and actually onboarded hone chahiye.
+   bs
+
+--> getFriends API
+   - use Ref and Populate.
+
+--> 
