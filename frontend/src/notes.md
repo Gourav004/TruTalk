@@ -59,6 +59,17 @@ make all the routes in one file under router and use in server.js
    - use Sign with all the args
    - write it in cookie under a name.
 
+-> How to make a new Route
+  - in Server.js make a new route pah with a newName (any) 
+      -- app.use("/users" , userRouter)
+  - import this userRouter  where you gonna add all ts routes. lets say user.route.js
+      - and is wali file me router.get() use krna hai.
+      --- Now make routes inside this (controllers)
+         - import express and app.use(express.json());
+         - write the routes export async function ()=>{}
+                --import these into the main file of routes(parent) and use
+
+
 -> Login API
 Validate all the data (check if email and password are provided)
 Find user in the database using User.findOne({ email })
